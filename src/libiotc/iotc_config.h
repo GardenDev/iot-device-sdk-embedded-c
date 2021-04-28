@@ -34,7 +34,7 @@
 #endif
 
 #ifndef IOTC_MAX_IDLE_TIMEOUT
-#define IOTC_MAX_IDLE_TIMEOUT 5
+#define IOTC_MAX_IDLE_TIMEOUT 1
 #endif
 
 #ifndef IOTC_MQTT_PORT

@@ -48,7 +48,8 @@ iotc_bsp_io_net_state_t iotc_bsp_io_net_socket_connect(
   hints.ai_socktype = socket_type;
   hints.ai_flags = 0;
   hints.ai_protocol = 0;
-
+  
+  *iotc_socket = -1;
   // Address resolution.
   status = getaddrinfo(host, NULL, &hints, &result);
   if (0 != status) {
@@ -90,6 +91,7 @@ iotc_bsp_io_net_state_t iotc_bsp_io_net_socket_connect(
         return IOTC_BSP_IO_NET_STATE_OK;
       } else {
         close(*iotc_socket);
+        *iotc_socket = -1;
       }
     }
   }
@@ -204,7 +206,7 @@ iotc_bsp_io_net_state_t iotc_bsp_io_net_close_socket(
 
   close(*iotc_socket);
 
-  *iotc_socket = 0;
+  *iotc_socket = -1;
 
   return IOTC_BSP_IO_NET_STATE_OK;
 }
