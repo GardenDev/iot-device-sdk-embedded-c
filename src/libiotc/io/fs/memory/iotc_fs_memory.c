@@ -23,12 +23,14 @@
 #include "iotc_RootCA_list.h"
 #endif
 
+#if 0
 /* The size of the buffer to be used for reads. */
 #ifndef IOTC_NO_TLS_LAYER
 const size_t iotc_fs_buffer_size = IOTC_ROOTCA_LIST_BYTE_LENGTH;
 #else
 const size_t iotc_fs_buffer_size = 512;
 #endif /* IOTC_NO_TLS_LAYER */
+#endif
 
 /* local stat handler function type defined per resource id */
 typedef iotc_state_t(iotc_fs_memory_stat_t)(
@@ -89,7 +91,8 @@ iotc_state_t iotc_fs_memory_stat_builtin_cert(
   }
 
   /* update the resource size by taking it from the compiled in array */
-  resource_stat->resource_size = sizeof(iotc_RootCA_list);
+  //resource_stat->resource_size = sizeof(iotc_RootCA_list);
+  resource_stat->resource_size = mqtt_server_info.ca_len;
 
   return IOTC_STATE_OK;
 }
@@ -102,7 +105,8 @@ iotc_state_t iotc_fs_memory_open_builtin_cert(
   iotc_fs_memory_database_t* const entry =
       &IOTC_FS_MEMORY_DATABASE[resource_id];
 
-  entry->memory_ptr = iotc_RootCA_list;
+  //entry->memory_ptr = iotc_RootCA_list;
+  entry->memory_ptr = mqtt_server_info.ca;
 
   return IOTC_STATE_OK;
 }
@@ -253,6 +257,13 @@ iotc_state_t iotc_fs_read(const void* context,
 
     /* update the size of the buffer to be returned taking into account chunk
      * size */
+/* The size of the buffer to be used for reads. */
+#ifndef IOTC_NO_TLS_LAYER
+    //const size_t iotc_fs_buffer_size = IOTC_ROOTCA_LIST_BYTE_LENGTH;
+    const size_t iotc_fs_buffer_size = mqtt_server_info.ca_len;
+#else
+    const size_t iotc_fs_buffer_size = 512;
+#endif /* IOTC_NO_TLS_LAYER */
     *buffer_size = IOTC_MIN(resource_stat.resource_size - real_offset,
                             iotc_fs_buffer_size);
   }

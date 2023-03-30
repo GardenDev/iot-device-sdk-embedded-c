@@ -114,7 +114,7 @@ typedef enum {
 /**
  * @brief A flag to translate between {@link ::iotc_state_t state messages} to their numeric codes.
  */
-#define IOTC_OPT_NO_ERROR_STRINGS 1
+//#define IOTC_OPT_NO_ERROR_STRINGS 1
 
 /**
  * @brief Gets the {@link ::iotc_state_t state message} associated with a numeric code.

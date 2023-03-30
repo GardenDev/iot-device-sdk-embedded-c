@@ -21,11 +21,32 @@
 extern "C" {
 #endif
 
+typedef struct {
+	const char *domain;
+	unsigned short port;
+	const unsigned char *ca;
+	unsigned short ca_len;
+	const char *username;
+} UltronMQTTServerInfo_t;
+
+#define GCP_MQTT_LTS_DOMAIN			"mqtt.2030.ltsapis.goog"
+#define GCP_MQTT_PORT_NUM			8883
+
+#define ClearBlade_MQTT_LTS_DOMAIN	"asia-east1-mqtt.clearblade.com"
+#define ClearBlade_MQTT_PORT_NUM	8883
+
+extern unsigned char gcp_RootCA_list[];
+extern unsigned char clearblade_RootCA_list[];
+
+extern UltronMQTTServerInfo_t mqtt_server_info;
+
+#if 0
 #ifndef IOTC_ROOTCA_LIST_BYTE_LENGTH
 #define IOTC_ROOTCA_LIST_BYTE_LENGTH 1389
 #endif /* IOTC_ROOTCA_LIST_BYTE_LENGTH */
 
 extern unsigned char iotc_RootCA_list[IOTC_ROOTCA_LIST_BYTE_LENGTH];
+#endif
 
 #ifdef __cplusplus
 }

@@ -258,6 +258,13 @@ iotc_state_t iotc_event_loop_with_evtds(
                      iotc_bsp_time_getcurrenttime_seconds());
     }
   }
+  #if 0  // force to terminal MQTT connection by reactivate_flag
+  #include "ultron_iot_task.h"
+  if (chk_reactivate_flag()) {
+    state = IOTC_BACKOFF_TERMINAL;
+    goto err_handling;
+  }
+  #endif
 
 err_handling:
   return state;

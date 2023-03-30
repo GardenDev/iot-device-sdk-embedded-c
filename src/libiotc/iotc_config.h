@@ -37,6 +37,7 @@
 #define IOTC_MAX_IDLE_TIMEOUT 5
 #endif
 
+#if 0
 #ifndef IOTC_MQTT_PORT
 #define IOTC_MQTT_PORT 8883
 /* note: usually port 1883 is used for insecure MQTT connections */
@@ -45,6 +46,7 @@
 #ifndef IOTC_MQTT_HOST
 #define IOTC_MQTT_HOST \
   { "mqtt.2030.ltsapis.goog", IOTC_MQTT_PORT }
+#endif
 #endif
 
 #endif /* __IOTC_CONFIG_H__ */

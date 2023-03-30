@@ -84,7 +84,9 @@ iotc_state_t iotc_mqtt_serialiser_size(size_t* msg_len, size_t* remaining_len,
   if (message->common.common_u.common_bits.type == IOTC_MQTT_TYPE_CONNECT) {
     /* @TODO: Should get this first len from the actual protocol_name
      * variable, instead of hardcoding it. */
-    *msg_len += 6; /* Protocol name. */
+    //*msg_len += 6; /* Protocol name. */
+	*msg_len += 2; /* Size of Protocol name length. */
+    *msg_len += message->connect.protocol_name->length; /* Protocol name. */
     *msg_len += 1; /* Protocol version. */
     *msg_len += 1; /* Connect flags. */
     *msg_len += 2; /* Keep alive timer. */

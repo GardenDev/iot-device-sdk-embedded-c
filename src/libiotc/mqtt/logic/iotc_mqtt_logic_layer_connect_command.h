@@ -171,10 +171,9 @@ static inline iotc_state_t do_mqtt_connect(
       IOTC_CR_EXIT(task->cs,
                    iotc_mqtt_logic_layer_finalize_task(context, task));
     } else {
-      iotc_debug_format("connack.return_code == %d",
-                        msg_memory->connack.return_code);
-
       state = get_error_from_connack(msg_memory->connack.return_code);
+      iotc_debug_format("connack.return_code == %d -> state=%d",
+                        msg_memory->connack.return_code, state);
 
       /* Inform the next layer about a state change. */
       IOTC_PROCESS_CONNECT_ON_NEXT_LAYER(context, data, state);

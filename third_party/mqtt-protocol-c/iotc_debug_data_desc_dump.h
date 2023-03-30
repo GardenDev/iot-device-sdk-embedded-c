@@ -19,7 +19,6 @@
 #ifndef __IOTC_DEBUG_DATA_DESC_DUMP_H__
 #define __IOTC_DEBUG_DATA_DESC_DUMP_H__
 
-
 #if IOTC_DEBUG_OUTPUT
 extern void iotc_debug_data_desc_dump(const iotc_data_desc_t* buffer);
 extern void iotc_debug_data_desc_dump_ascii(const iotc_data_desc_t* buffer);

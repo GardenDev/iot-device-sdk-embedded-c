@@ -25,7 +25,7 @@
   printf(__VA_ARGS__);     \
   fflush(stdout)
 #else /* IOTC_DEBUG_PRINTF */
-#define __iotc_printf(...) IOTC_DEBUG_PRINTF(__VA_ARGS__);
+#define __iotc_printf(...) IOTC_DEBUG_PRINTF(__VA_ARGS__)
 #endif /* IOTC_DEBUG_PRINTF */
 
 #if BSP_DEBUG_LOG

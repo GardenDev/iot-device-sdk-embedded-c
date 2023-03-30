@@ -40,7 +40,7 @@ extern "C" {
   printf(__VA_ARGS__);     \
   fflush(stdout);
 #else /* IOTC_DEBUG_PRINTF */
-#define __iotc_printf(...) IOTC_DEBUG_PRINTF(__VA_ARGS__);
+#define __iotc_printf(...) IOTC_DEBUG_PRINTF(__VA_ARGS__)
 #endif /* IOTC_DEBUG_PRINTF */
 
 #if IOTC_DEBUG_OUTPUT
@@ -63,10 +63,10 @@ void iotc_debug_data_logger_impl(const char* msg,
                 iotc_bsp_time_getcurrenttime_milliseconds(), \
                 iotc_debug_dont_print_the_path(__FILE__), __LINE__, __func__)
 #define iotc_debug_data_logger(msg, dsc)                                       \
-  __iotc_printf("[%lld][%s:%d (%s)] #\n",                                       \
+  do { __iotc_printf("[%lld][%s:%d (%s)] #\n",                                       \
                 iotc_bsp_time_getcurrenttime_milliseconds(),                   \
                 iotc_debug_dont_print_the_path(__FILE__), __LINE__, __func__); \
-  iotc_debug_data_logger_impl(msg, dsc)
+  iotc_debug_data_logger_impl(msg, dsc); } while(0)
 #else /* IOTC_DEBUG_OUTPUT */
 #define iotc_debug_logger(...)
 #define iotc_debug_format(...)

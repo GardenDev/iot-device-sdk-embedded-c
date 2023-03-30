@@ -71,6 +71,12 @@ iotc_bsp_crypto_state_t iotc_bsp_base64_encode_urlsafe(
         break;
     }
   }
+  // --BGN-2022-12-- Ultron solve link issue with clearblade
+  // remove '=' in tail
+  unsigned char *ptr = &dst_string[*bytes_written-1];
+  while (*ptr == '=') 
+  	*ptr = '\0', ptr--, *bytes_written -= 1;
+  // --END-2022-12- 
 
   return IOTC_BSP_CRYPTO_STATE_OK;
 }

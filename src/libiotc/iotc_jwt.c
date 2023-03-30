@@ -18,6 +18,7 @@
 #include "iotc_bsp_crypto.h"
 #include "iotc_bsp_time.h"
 #include "iotc_macros.h"
+#include "iotc_debug.h"
 
 #include <stdio.h>
 
@@ -52,6 +53,8 @@ static iotc_bsp_crypto_state_t _iotc_create_iotcore_jwt_b64h_b64p(
   snprintf(payload, IOTC_JWT_PAYLOAD_BUF_SIZE,
            "{\"iat\":%lld,\"exp\":%lld,\"aud\":\"%s\"}", current_time_in_sec,
            current_time_in_sec + expiration_period_sec, project_id);
+
+  iotc_debug_format("JWT Payload=[%s]", payload);
 
   // base64 encode, header
   *bytes_written = 0;

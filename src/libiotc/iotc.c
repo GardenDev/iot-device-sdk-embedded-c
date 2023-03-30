@@ -53,6 +53,8 @@
 
 #include <iotc_error.h>
 
+#include "iotc_RootCA_list.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -352,6 +354,7 @@ iotc_state_t iotc_connect(iotc_context_handle_t iotc_h, const char* username,
                           uint16_t connection_timeout,
                           uint16_t keepalive_timeout,
                           iotc_user_callback_t* client_callback) {
+#if 0
   typedef struct iotc_static_host_desc_s {
     char* name;
     uint16_t port;
@@ -363,6 +366,11 @@ iotc_state_t iotc_connect(iotc_context_handle_t iotc_h, const char* username,
                          IOTC_MQTT_HOST_ACCESSOR.port, username, password,
                          client_id, connection_timeout, keepalive_timeout,
                          client_callback);
+#endif
+
+  return iotc_connect_to(iotc_h, mqtt_server_info.domain, mqtt_server_info.port, username, password,
+					   client_id, connection_timeout, keepalive_timeout,
+					   client_callback);
 }
 
 iotc_state_t iotc_connect_to(iotc_context_handle_t iotc_h, const char* host,
