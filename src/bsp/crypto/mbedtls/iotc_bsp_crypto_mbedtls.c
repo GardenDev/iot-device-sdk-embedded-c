@@ -28,6 +28,8 @@
 #include "mbedtls/entropy.h"
 #include "mbedtls/pk.h"
 
+#include "psa_crypto_random_impl.h"
+
 #include <stdio.h>
 
 static iotc_bsp_crypto_state_t _iotc_bsp_base64_encode(
@@ -91,9 +93,9 @@ iotc_bsp_crypto_state_t iotc_bsp_sha256(uint8_t* dst_buf_32_bytes,
   mbedtls_sha256_context sha_ctx;
   mbedtls_sha256_init(&sha_ctx);
 
-  IOTC_CHECK_STATE(mbedtls_sha256_starts_ret(&sha_ctx, 0));
-  IOTC_CHECK_STATE(mbedtls_sha256_update_ret(&sha_ctx, src_buf, src_buf_size));
-  IOTC_CHECK_STATE(mbedtls_sha256_finish_ret(&sha_ctx, dst_buf_32_bytes));
+  IOTC_CHECK_STATE(mbedtls_sha256_starts(&sha_ctx, 0));
+  IOTC_CHECK_STATE(mbedtls_sha256_update(&sha_ctx, src_buf, src_buf_size));
+  IOTC_CHECK_STATE(mbedtls_sha256_finish(&sha_ctx, dst_buf_32_bytes));
 
   return IOTC_BSP_CRYPTO_STATE_OK;
 
@@ -136,20 +138,20 @@ iotc_bsp_crypto_state_t iotc_bsp_ecc(
   IOTC_CHECK_CND_DBGMESSAGE(
       (mbedtls_ret =
            mbedtls_pk_parse_key(&pk, (const unsigned char*)private_key_pem,
-                                strlen(private_key_pem) + 1, NULL, 0)) != 0,
+                                strlen(private_key_pem) + 1, NULL, 0, mbedtls_psa_get_random, MBEDTLS_PSA_RANDOM_STATE)) != 0,
       IOTC_BSP_CRYPTO_KEY_PARSE_ERROR, return_code, "mbedtls_pk_parse_key");
 
   IOTC_CHECK_CND_DBGMESSAGE(
-      (mbedtls_ret = mbedtls_ecdsa_from_keypair(&ecdsa_sign, pk.pk_ctx)) != 0,
+      (mbedtls_ret = mbedtls_ecdsa_from_keypair(&ecdsa_sign, (mbedtls_ecp_keypair *)(pk).MBEDTLS_PRIVATE(pk_ctx))) != 0,
       IOTC_BSP_CRYPTO_ECC_ERROR, return_code, "mbedtls_ecdsa_from_keypair");
 
   // Deterministic signatures are generally preferable on devices with poor
   // entropy sources as is so often the case with IoT.
-  IOTC_CHECK_CND_DBGMESSAGE((mbedtls_ret = mbedtls_ecdsa_sign_det(
-                                 &ecdsa_sign.grp, &r, &s, &ecdsa_sign.d,
-                                 src_buf, src_buf_len, MBEDTLS_MD_SHA256)) != 0,
+  IOTC_CHECK_CND_DBGMESSAGE((mbedtls_ret = mbedtls_ecdsa_sign_det_ext(
+                                 &ecdsa_sign.MBEDTLS_PRIVATE(grp), &r, &s, &ecdsa_sign.MBEDTLS_PRIVATE(d),
+                                 src_buf, src_buf_len, MBEDTLS_MD_SHA256, mbedtls_psa_get_random, MBEDTLS_PSA_RANDOM_STATE)) != 0,
                             IOTC_BSP_CRYPTO_ECC_ERROR, return_code,
-                            "mbedtls_ecdsa_sign_det");
+                            "mbedtls_ecdsa_sign_det_ext");
 
   // two 32 byte integers build up a JWT ECC signature: r and s
   // see https://tools.ietf.org/html/rfc7518#section-3.4
