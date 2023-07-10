@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include "esp_random.h"
 #include "sys/types.h"
 #include "iotc_bsp_crypto.h"
 #include "iotc_bsp_mem.h"
@@ -104,6 +105,11 @@ err_handling:
   return IOTC_BSP_CRYPTO_SHA256_ERROR;
 }
 
+static int myrand( void *rng_state, unsigned char *output, size_t len ) {
+    esp_fill_random(output, len);
+    return( 0 );
+}
+
 iotc_bsp_crypto_state_t iotc_bsp_ecc(
     const iotc_crypto_key_data_t* private_key_data, uint8_t* dst_buf,
     size_t dst_buf_size, size_t* bytes_written, const uint8_t* src_buf,
@@ -138,7 +144,7 @@ iotc_bsp_crypto_state_t iotc_bsp_ecc(
   IOTC_CHECK_CND_DBGMESSAGE(
       (mbedtls_ret =
            mbedtls_pk_parse_key(&pk, (const unsigned char*)private_key_pem,
-                                strlen(private_key_pem) + 1, NULL, 0, mbedtls_psa_get_random, MBEDTLS_PSA_RANDOM_STATE)) != 0,
+                                strlen(private_key_pem) + 1, NULL, 0, myrand, NULL)) != 0,
       IOTC_BSP_CRYPTO_KEY_PARSE_ERROR, return_code, "mbedtls_pk_parse_key");
 
   IOTC_CHECK_CND_DBGMESSAGE(
@@ -149,7 +155,7 @@ iotc_bsp_crypto_state_t iotc_bsp_ecc(
   // entropy sources as is so often the case with IoT.
   IOTC_CHECK_CND_DBGMESSAGE((mbedtls_ret = mbedtls_ecdsa_sign_det_ext(
                                  &ecdsa_sign.MBEDTLS_PRIVATE(grp), &r, &s, &ecdsa_sign.MBEDTLS_PRIVATE(d),
-                                 src_buf, src_buf_len, MBEDTLS_MD_SHA256, mbedtls_psa_get_random, MBEDTLS_PSA_RANDOM_STATE)) != 0,
+                                 src_buf, src_buf_len, MBEDTLS_MD_SHA256, myrand, NULL)) != 0,
                             IOTC_BSP_CRYPTO_ECC_ERROR, return_code,
                             "mbedtls_ecdsa_sign_det_ext");
 
